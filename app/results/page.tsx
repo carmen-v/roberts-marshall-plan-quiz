@@ -17,6 +17,33 @@ function getMessage(score: number) {
     return "Niet getreurd — je kunt het altijd opnieuw proberen!";
 }
 
+// Visual order: 2nd (left), 1st (center), 3rd (right)
+const PODIUM_ORDER = [1, 0, 2] as const;
+
+const MEDAL = {
+    0: {
+        rank: "1",
+        color: "text-amber-400",
+        border: "border-amber-400",
+        bg: "bg-amber-400/5",
+        height: "h-40",
+    },
+    1: {
+        rank: "2",
+        color: "text-slate-400",
+        border: "border-slate-600",
+        bg: "bg-surface",
+        height: "h-28",
+    },
+    2: {
+        rank: "3",
+        color: "text-orange-600",
+        border: "border-orange-800",
+        bg: "bg-surface",
+        height: "h-20",
+    },
+};
+
 export default function ResultsPage() {
     const [name, setName] = useState("");
     const [score, setScore] = useState<number | null>(null);
@@ -29,16 +56,22 @@ export default function ResultsPage() {
 
         const playerName = sessionStorage.getItem("quiz_name") ?? "Anoniem";
         const playerScore = parseInt(sessionStorage.getItem("quiz_score") ?? "0");
+        const alreadySaved = sessionStorage.getItem("quiz_submitted") === "true";
 
         setName(playerName);
         setScore(playerScore);
 
-        // Save score, then fetch updated leaderboard
-        fetch("/api/scores", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ name: playerName, score: playerScore }),
-        })
+        const saveAndFetch = alreadySaved
+            ? Promise.resolve()
+            : fetch("/api/scores", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name: playerName, score: playerScore }),
+            }).then(() => {
+                sessionStorage.setItem("quiz_submitted", "true");
+            });
+
+        saveAndFetch
             .then(() => fetch("/api/scores"))
             .then((res) => res.json())
             .then(setLeaderboard);
@@ -46,74 +79,48 @@ export default function ResultsPage() {
 
     if (score === null) return null;
 
-    const percentage = (score / 10) * 100;
-
-    console.log(name, score)
+    const top3 = leaderboard.slice(0, 3);
+    const rest  = leaderboard.slice(3);
 
     return (
         <main className="flex min-h-screen flex-col items-center justify-center px-4 py-16">
-            <div className="w-full max-w-2xl space-y-10">
+            <div className="w-full max-w-2xl space-y-12">
 
-                {/* Header */}
-                <div className="space-y-2">
-                    <p className="text-xs font-semibold uppercase tracking-widest text-accent">
-                        Quiz afgerond
-                    </p>
-                    <h1 className="text-4xl font-bold tracking-tight text-foreground">
-                        Goed gedaan, {name}!
-                    </h1>
-                    <p className="text-muted">{getMessage(score)}</p>
-                </div>
+                {/* Podium */}
+                {top3.length > 0 && (
+                    <div className="space-y-6">
+                        <p className="text-xs font-semibold uppercase tracking-widest text-accent text-center">
+                            Goed gedaan 7A! Dit is de top 10 van de Hall of Fame:
+                        </p>
 
-                {/* Score card */}
-                <div className="rounded-2xl border border-border bg-surface p-8 space-y-6">
-                    <div className="flex items-end gap-2">
-                        <span className="text-7xl font-bold text-accent leading-none">{score}</span>
-                        <span className="mb-2 text-2xl font-semibold text-muted">/ 10</span>
-                    </div>
-                    <p className="text-sm text-muted">vragen correct beantwoord</p>
+                        <div className="flex items-end justify-center gap-3">
+                            {PODIUM_ORDER.map((idx) => {
+                                const entry = top3[idx];
+                                const medal = MEDAL[idx];
 
-                    <div className="space-y-2">
-                        <div className="h-2 w-full overflow-hidden rounded-full bg-background">
-                            <div
-                                className="h-full rounded-full bg-accent transition-all duration-700"
-                                style={{ width: `${percentage}%` }}
-                            />
-                        </div>
-                        <p className="text-right text-xs text-subtle">{percentage}%</p>
-                    </div>
-                </div>
+                                // Empty slot if not enough players
+                                if (!entry) return <div key={idx} className="w-32" />;
 
-                {/* Leaderboard */}
-                {leaderboard.length > 0 && (
-                    <div className="space-y-4">
-                        <h2 className="text-lg font-semibold text-foreground">Top 10</h2>
-                        <div className="overflow-hidden rounded-xl border border-border">
-                            {leaderboard.map((entry) => {
-                                const isCurrentPlayer = entry.name === name;
+                                const isMe = entry.name === name;
+
                                 return (
-                                    <div
-                                        key={`${entry.rank}-${entry.name}`}
-                                        className={`flex items-center gap-4 px-6 py-4 ${
-                                            entry.rank < leaderboard.length ? "border-b border-border" : ""
-                                        } ${isCurrentPlayer ? "bg-accent/10" : "bg-surface"}`}
-                                    >
-                                        <span className={`w-6 text-sm font-bold ${
-                                            entry.rank === 1 ? "text-accent" : "text-subtle"
-                                        }`}>
-                                            {entry.rank}
-                                        </span>
-                                        <span className={`flex-1 font-medium ${
-                                            isCurrentPlayer ? "text-accent" : "text-foreground"
-                                        }`}>
-                                            {entry.name}
-                                            {isCurrentPlayer && (
-                                                <span className="ml-2 text-xs text-muted">(jij)</span>
-                                            )}
-                                        </span>
-                                        <span className="text-sm font-semibold text-muted">
-                                            {entry.score} / 10
-                                        </span>
+                                    <div key={entry.rank} className="flex w-32 flex-col items-center">
+                                        {/* Fixed-height text area — keeps all blocks aligned */}
+                                        <div className="flex h-16 w-full flex-col items-center justify-end gap-1 pb-1">
+                                            <p className={`line-clamp-2 wrap-break-word text-center text-sm font-semibold leading-tight ${isMe ? "text-accent" : "text-foreground"}`}>
+                                                {entry.name}{isMe ? " (jij)" : ""}
+                                            </p>
+                                            <p className={`text-xs font-bold ${medal.color}`}>
+                                                {entry.score} / 10
+                                            </p>
+                                        </div>
+
+                                        {/* Podium block */}
+                                        <div className={`w-full ${medal.height} ${medal.bg} border ${medal.border} rounded-t-xl flex items-center justify-center`}>
+                                            <span className={`text-4xl font-black ${medal.color}`}>
+                                                {medal.rank}
+                                            </span>
+                                        </div>
                                     </div>
                                 );
                             })}
@@ -121,7 +128,42 @@ export default function ResultsPage() {
                     </div>
                 )}
 
-                {/* Actions */}
+                {/* 4th – 10th */}
+                {rest.length > 0 && (
+                    <div className="overflow-hidden rounded-xl border border-border">
+                        {rest.map((entry, i) => {
+                            const isMe = entry.name === name;
+                            return (
+                                <div
+                                    key={`${entry.rank}-${entry.name}`}
+                                    className={`flex items-center gap-4 px-6 py-3 ${i < rest.length - 1 ? "border-b border-border" : ""} ${isMe ? "bg-accent/10" : "bg-surface"}`}
+                                >
+                                    <span className="w-6 text-sm font-bold text-subtle">
+                                        {entry.rank}
+                                    </span>
+                                    <span className={`flex-1 text-sm font-medium ${isMe ? "text-accent" : "text-foreground"}`}>
+                                        {entry.name}
+                                        {isMe && <span className="ml-2 text-xs text-muted">(jij)</span>}
+                                    </span>
+                                    <span className="text-sm font-semibold text-muted">
+                                        {entry.score} / 10
+                                    </span>
+                                </div>
+                            );
+                        })}
+                    </div>
+                )}
+
+                {/* Personal result */}
+                <div className="text-center space-y-1">
+                    <p className="text-muted">
+                        {name}, je scoorde
+                        <span className="font-semibold text-accent"> {score} van de 10 </span>
+                        vragen goed. {getMessage(score)}
+                    </p>
+                </div>
+
+                {/* Play again */}
                 <Link
                     href="/"
                     className="block w-full rounded-lg bg-accent px-4 py-3 text-center font-semibold text-accent-fg transition hover:bg-accent-hover active:opacity-80"
