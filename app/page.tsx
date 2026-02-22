@@ -1,6 +1,18 @@
-import Link from "next/link";
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function LandingPage() {
+    const [name, setName] = useState("");
+    const router = useRouter();
+
+    function handleStart() {
+        sessionStorage.setItem("quiz_name", name.trim() || "Anoniem");
+        sessionStorage.setItem("quiz_score", "0");
+        router.push("/question/1");
+    }
+
     return (
         <main className="flex min-h-screen flex-col lg:flex-row">
 
@@ -14,11 +26,11 @@ export default function LandingPage() {
                     </p>
 
                     <h1 className="mb-6 text-5xl font-bold leading-tight tracking-tight text-foreground lg:text-7xl">
-Europa in herstel
+                        Europa in herstel
                     </h1>
 
                     <p className="mb-12 text-lg text-muted">
-                        10 meerkeuzevragen  over de Marshall Plan en de wederopbouw van Europa na de Tweede Wereldoorlog. Test je kennis en ontdek hoe goed jij het verhaal van Europa in herstel kent!
+                        10 meerkeuzevragen over de Marshall Plan en de wederopbouw van Europa na de Tweede Wereldoorlog. Test je kennis en ontdek hoe goed jij het verhaal van Europa in herstel kent!
                         Als je in de top 10 bent dan zie je je naam terug in de Hall of Fame! Als je je naam niet ziet, dan ben je de op de tweede scherm zonder score te zien. Maar niet getreurd, je kunt het altijd opnieuw proberen!
                     </p>
 
@@ -27,7 +39,7 @@ Europa in herstel
                         <span className="h-px w-4 bg-border" />
                         <span>Groep 7A</span>
                         <span className="h-px w-4 bg-border" />
-                        <span>Thema 4: Europa is geen spelletje. De Marshallplan </span>
+                        <span>Thema 4: Europa is geen spelletje. De Marshallplan</span>
                         <span className="h-px w-4 bg-border" />
                         <span>24 maart 2026</span>
                     </div>
@@ -55,16 +67,20 @@ Europa in herstel
                                 id="name"
                                 type="text"
                                 placeholder="Vul hier je naam in"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                onKeyDown={(e) => e.key === "Enter" && handleStart()}
                                 className="w-full rounded-lg border border-border bg-background px-4 py-3 text-foreground placeholder:text-subtle outline-none transition focus:border-accent focus:ring-1 focus:ring-accent"
                             />
                         </div>
 
-                        <Link
-                            href="/question/1"
-                            className="block w-full rounded-lg bg-accent px-4 py-3 text-center font-semibold text-accent-fg transition hover:bg-accent-hover active:opacity-80"
+                        <button
+                            type="button"
+                            onClick={handleStart}
+                            className="block w-full rounded-lg bg-accent px-4 py-3 text-center font-semibold text-accent-fg transition hover:bg-accent-hover active:opacity-80 cursor-pointer"
                         >
                             Start Quiz
-                        </Link>
+                        </button>
                     </div>
                 </div>
             </div>
