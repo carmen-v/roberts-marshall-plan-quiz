@@ -78,7 +78,8 @@ export default function LandingPage() {
                         <button
                             type="button"
                             onClick={handleStart}
-                            className="block w-full rounded-lg bg-accent px-4 py-3 text-center font-semibold text-accent-fg transition hover:bg-accent-hover active:opacity-80 cursor-pointer"
+                            disabled={!name.trim()}
+                            className="block w-full rounded-lg bg-accent px-4 py-3 text-center font-semibold text-accent-fg transition hover:bg-accent-hover active:opacity-80 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-accent"
                         >
                             Start Quiz
                         </button>
