@@ -1,0 +1,99 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+# Ignored default folder with query files
+/queries/
+# Datasource local storage ignored files
+/dataSources/
+/dataSources.local.xml
+# Editor-based HTTP Client requests
+/httpRequests/
+
+# dependencies
+node_modules
+.pnp
+.pnp.js
+
+# Generated files (via pnpm-codegen)
+generated/
+*.generated.ts
+*.generated.graphql
+*.generated.json
+api-collection/playground/*
+
+backend/migrations
+
+# testing
+coverage
+screenshots
+videos
+tmp
+tmp.*
+.nyc*
+
+# build output
+.next
+out
+build
+dist
+storybook-static
+test_output
+.serverless
+
+# misc
+.DS_Store
+.eslintcache
+*.pem
+tsconfig.tsbuildinfo
+.nvmrc
+
+# debug
+*-debug.log*
+pnpm-error.log*
+
+# local env files
+.env
+.env.local
+.env.*.local
+.env.turbo
+
+# turbo
+.turbo
+.vercel
+.turbo-cache
+
+# mach
+.mach
+.mach-composer
+
+# terraform
+.terraform
+terraform.tfstate
+terraform.tfstate.backup
+.terraform.lock.hcl
+
+# Mach Composer
+config/deployments/
+config/*.decrypted.yaml
+config/.decrypted*
+config/*.png
+
+# playwright
+test-results
+allure-results
+playwright-report/
+playwright/.cache/
+snapshots
+blob-report
+
+# intellij
+/.idea
+
+# version managers
+.tool-versions
+
+# redis
+dump.rdb
+
+!.github/actions/mcc-turbo-changes-action/dist
+/service-account.json
