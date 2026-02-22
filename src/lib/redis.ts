@@ -1,0 +1,15 @@
+import { createClient } from "redis";
+
+const client = createClient({ url: process.env.REDIS_URL });
+
+client.on("error", (err) => console.error("Redis error:", err));
+
+let connectionPromise: Promise<void> | null = null;
+
+export async function getRedis() {
+    if (!connectionPromise) {
+        connectionPromise = client.connect();
+    }
+    await connectionPromise;
+    return client;
+}
