@@ -4,7 +4,7 @@ const client = createClient({ url: process.env.REDIS_URL });
 
 client.on("error", (err) => console.error("Redis error:", err));
 
-let connectionPromise: Promise<void> | null = null;
+let connectionPromise: Promise<unknown> | null = null;
 
 export async function getRedis() {
     if (!connectionPromise) {
