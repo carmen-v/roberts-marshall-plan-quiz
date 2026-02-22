@@ -20,7 +20,7 @@ export async function GET() {
 
     const leaderboard = entries.map((entry, i) => ({
         rank: i + 1,
-        name: entry.value.split("|")[0],
+        name: String(entry.value).split("|")[0],
         score: entry.score,
     }));
 
