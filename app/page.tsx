@@ -10,6 +10,7 @@ export default function LandingPage() {
     function handleStart() {
         sessionStorage.setItem("quiz_name", name.trim() || "Anoniem");
         sessionStorage.setItem("quiz_score", "0");
+        sessionStorage.removeItem("quiz_submitted");
         router.push("/question/1");
     }
 
