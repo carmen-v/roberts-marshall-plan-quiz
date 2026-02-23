@@ -5,14 +5,38 @@ import { useRouter } from "next/navigation";
 
 export default function LandingPage() {
     const [name, setName] = useState("");
+    const [nameError, setNameError] = useState<string | null>(null);
+    const [isChecking, setIsChecking] = useState(false);
     const router = useRouter();
 
-    function handleStart() {
-        sessionStorage.setItem("quiz_name", name.trim() || "Anoniem");
+    async function handleNameBlur() {
+        if (!name.trim()) return;
+        setIsChecking(true);
+        const res = await fetch(`/api/check-name?name=${encodeURIComponent(name.trim())}`);
+        const { taken } = await res.json();
+        setIsChecking(false);
+        setNameError(taken ? "Deze naam is al in gebruik. Kies een andere naam." : null);
+    }
+
+    async function handleStart() {
+        if (!canStart) return;
+        const res = await fetch("/api/check-name", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name: name.trim() }),
+        });
+        const { reserved } = await res.json();
+        if (!reserved) {
+            setNameError("Deze naam is al in gebruik. Kies een andere naam.");
+            return;
+        }
+        sessionStorage.setItem("quiz_name", name.trim());
         sessionStorage.setItem("quiz_score", "0");
         sessionStorage.removeItem("quiz_submitted");
         router.push("/question/1");
     }
+
+    const canStart = !!name.trim() && !nameError && !isChecking;
 
     return (
         <main className="flex min-h-screen flex-col lg:flex-row">
@@ -69,16 +93,31 @@ export default function LandingPage() {
                                 type="text"
                                 placeholder="Vul hier je naam in"
                                 value={name}
-                                onChange={(e) => setName(e.target.value)}
-                                onKeyDown={(e) => e.key === "Enter" && handleStart()}
-                                className="w-full rounded-lg border border-border bg-background px-4 py-3 text-foreground placeholder:text-subtle outline-none transition focus:border-accent focus:ring-1 focus:ring-accent"
+                                onChange={(e) => {
+                                    const val = e.target.value;
+                                    setName(val.charAt(0).toUpperCase() + val.slice(1));
+                                    setNameError(null);
+                                }}
+                                onBlur={handleNameBlur}
+                                onKeyDown={(e) => e.key === "Enter" && canStart && handleStart()}
+                                className={`w-full rounded-lg border bg-background px-4 py-3 text-foreground placeholder:text-subtle outline-none transition focus:ring-1 ${
+                                    nameError
+                                        ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+                                        : "border-border focus:border-accent focus:ring-accent"
+                                }`}
                             />
+                            {isChecking && (
+                                <p className="text-xs text-muted">Naam controleren...</p>
+                            )}
+                            {nameError && (
+                                <p className="text-xs text-red-500">{nameError}</p>
+                            )}
                         </div>
 
                         <button
                             type="button"
                             onClick={handleStart}
-                            disabled={!name.trim()}
+                            disabled={!canStart}
                             className="block w-full rounded-lg bg-accent px-4 py-3 text-center font-semibold text-accent-fg transition hover:bg-accent-hover active:opacity-80 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-accent"
                         >
                             Start Quiz

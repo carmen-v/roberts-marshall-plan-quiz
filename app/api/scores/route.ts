@@ -2,13 +2,16 @@ import { NextRequest, NextResponse } from "next/server";
 import { getRedis } from "@/lib/redis";
 
 const KEY = "quiz:leaderboard";
+const NAMES_KEY = "quiz:names";
 
 export async function POST(req: NextRequest) {
     const { name, score } = await req.json();
     const redis = await getRedis();
 
-    // Use name|timestamp as member so the same name can appear multiple times
-    await redis.zAdd(KEY, { score, value: `${name}|${Date.now()}` });
+    await Promise.all([
+        redis.zAdd(KEY, { score, value: `${name}|${Date.now()}` }),
+        redis.sAdd(NAMES_KEY, name),
+    ]);
 
     return NextResponse.json({ ok: true });
 }
