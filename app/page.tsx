@@ -63,7 +63,7 @@ export default function LandingPage() {
                         <span className="h-px w-4 bg-border" />
                         <span>Groep 7A</span>
                         <span className="h-px w-4 bg-border" />
-                        <span>Thema 4: Europa is geen spelletje. De Marshallplan</span>
+                        <span>Thema 4: Europa is geen spelletje. Het Marshallplan</span>
                         <span className="h-px w-4 bg-border" />
                         <span>26 maart 2026</span>
                     </div>
@@ -78,7 +78,7 @@ export default function LandingPage() {
                             Zijn jullie klaar om te spelen?
                         </h2>
                         <p className="mt-1 text-sm text-muted">
-                            Vul de naam van jullie duo in en start de quiz. Na afloop zie je hoe jullie het hebben gedaan ten opzichte van alle andere duo's.
+                            Vul de naam van jullie duo in en start de quiz. Elke vraag heeft één goed antwoord. Na afloop zie je hoe jullie het hebben gedaan ten opzichte van alle andere duo's.
                         </p>
                     </div>
 
