@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { questions } from "@/data/questions";
 
@@ -10,8 +11,11 @@ export default function QuizQuestion({ number }: { number: number }) {
     const question = questions[number - 1];
     const next = number < 10 ? `/question/${number + 1}` : "/results";
     const progress = (number / 10) * 100;
+    const [selected, setSelected] = useState<number | null>(null);
 
     function handleAnswer(selectedIndex: number) {
+        if (selected !== null) return;
+        setSelected(selectedIndex);
         if (selectedIndex === question.correct) {
             const current = parseInt(sessionStorage.getItem("quiz_score") ?? "0");
             sessionStorage.setItem("quiz_score", String(current + 1));
@@ -19,7 +23,7 @@ export default function QuizQuestion({ number }: { number: number }) {
         if (number === 10) {
             sessionStorage.setItem("quiz_just_finished", "true");
         }
-        router.push(next);
+        setTimeout(() => router.push(next), 400);
     }
 
     return (
@@ -48,21 +52,34 @@ export default function QuizQuestion({ number }: { number: number }) {
                     </h2>
 
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                        {question.options.map((option, i) => (
-                            <button
-                                key={option}
-                                type="button"
-                                onClick={() => handleAnswer(i)}
-                                className="group flex cursor-pointer items-center gap-4 rounded-xl border border-border bg-surface p-6 text-left transition hover:border-accent"
-                            >
-                                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border text-sm font-bold text-subtle transition group-hover:border-accent group-hover:text-accent">
-                                    {LABELS[i]}
-                                </span>
-                                <span className="text-base font-medium text-foreground">
-                                    {option}
-                                </span>
-                            </button>
-                        ))}
+                        {question.options.map((option, i) => {
+                            const isSelected = selected === i;
+                            return (
+                                <button
+                                    key={option}
+                                    type="button"
+                                    onClick={() => handleAnswer(i)}
+                                    disabled={selected !== null}
+                                    className={`group flex cursor-pointer items-center gap-4 rounded-xl border p-6 text-left transition
+                                        ${isSelected
+                                            ? "border-accent bg-accent/10"
+                                            : "border-border bg-surface hover:border-accent"}
+                                        ${selected !== null && !isSelected ? "opacity-40" : ""}
+                                    `}
+                                >
+                                    <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border text-sm font-bold transition
+                                        ${isSelected
+                                            ? "border-accent text-accent"
+                                            : "border-border text-subtle group-hover:border-accent group-hover:text-accent"}
+                                    `}>
+                                        {LABELS[i]}
+                                    </span>
+                                    <span className="text-base font-medium text-foreground">
+                                        {option}
+                                    </span>
+                                </button>
+                            );
+                        })}
                     </div>
 
                 </div>
