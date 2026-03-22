@@ -61,30 +61,33 @@ export default function ResultsPage() {
         if (saved.current) return;
         saved.current = true;
 
-        const playerName = sessionStorage.getItem("quiz_name") ?? "Anoniem";
+        const justFinished = sessionStorage.getItem("quiz_just_finished") === "true";
+        sessionStorage.removeItem("quiz_just_finished");
+
+        const playerName = sessionStorage.getItem("quiz_name");
         const playerScore = parseInt(sessionStorage.getItem("quiz_score") ?? "0");
         const alreadySaved = sessionStorage.getItem("quiz_submitted") === "true";
 
-        setName(playerName);
-        setScore(playerScore);
+        if (justFinished && playerName) {
+            setName(playerName);
+            setScore(playerScore);
+        }
 
-        const saveAndFetch = alreadySaved
-            ? Promise.resolve()
-            : fetch("/api/scores", {
+        const saveAndFetch = justFinished && playerName && !alreadySaved
+            ? fetch("/api/scores", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ name: playerName, score: playerScore }),
             }).then(() => {
                 sessionStorage.setItem("quiz_submitted", "true");
-            });
+            })
+            : Promise.resolve();
 
         saveAndFetch
             .then(() => fetch("/api/scores"))
             .then((res) => res.json())
             .then(setLeaderboard);
     }, []);
-
-    if (score === null) return null;
 
     return (
         <main className="flex min-h-screen flex-col items-center justify-center px-4 py-16">
@@ -146,14 +149,16 @@ export default function ResultsPage() {
                     </div>
                 )}
 
-                {/* Personal result */}
-                <div className="text-center space-y-1">
-                    <p className="text-muted">
-                        {name}, jullie scoorden
-                        <span className="font-semibold text-accent"> {score} van de 10 </span>
-                        vragen goed. {getMessage(score)}
-                    </p>
-                </div>
+                {/* Personal result — only shown if they actually played */}
+                {score !== null && (
+                    <div className="text-center space-y-1">
+                        <p className="text-muted">
+                            {name}, jullie scoorden
+                            <span className="font-semibold text-accent"> {score} van de 10 </span>
+                            vragen goed. {getMessage(score)}
+                        </p>
+                    </div>
+                )}
 
             </div>
         </main>

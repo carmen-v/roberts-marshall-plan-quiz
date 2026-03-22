@@ -16,6 +16,9 @@ export default function QuizQuestion({ number }: { number: number }) {
             const current = parseInt(sessionStorage.getItem("quiz_score") ?? "0");
             sessionStorage.setItem("quiz_score", String(current + 1));
         }
+        if (number === 10) {
+            sessionStorage.setItem("quiz_just_finished", "true");
+        }
         router.push(next);
     }
 
