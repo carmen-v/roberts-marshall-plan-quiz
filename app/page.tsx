@@ -15,7 +15,7 @@ export default function LandingPage() {
         const res = await fetch(`/api/check-name?name=${encodeURIComponent(name.trim())}`);
         const { taken } = await res.json();
         setIsChecking(false);
-        setNameError(taken ? "Deze naam is al in gebruik. Kies een andere naam." : null);
+        setNameError(taken ? "Deze naam is al in gebruik. Kies een andere naam voor jullie duo." : null);
     }
 
     async function handleStart() {
@@ -27,7 +27,7 @@ export default function LandingPage() {
         });
         const { reserved } = await res.json();
         if (!reserved) {
-            setNameError("Deze naam is al in gebruik. Kies een andere naam.");
+            setNameError("Deze naam is al in gebruik. Kies een andere naam voor jullie duo.");
             return;
         }
         sessionStorage.setItem("quiz_name", name.trim());
@@ -36,7 +36,7 @@ export default function LandingPage() {
         router.push("/question/1");
     }
 
-    const canStart = !!name.trim() && !nameError && !isChecking;
+    const canStart = !!name.trim() && !nameError;
 
     return (
         <main className="flex min-h-screen flex-col lg:flex-row">
@@ -47,16 +47,15 @@ export default function LandingPage() {
                     <div className="mb-6 h-px w-10 bg-accent" />
 
                     <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-accent">
-                        Welkom in de spel
+                        Welkom bij het spel
                     </p>
 
                     <h1 className="mb-6 text-5xl font-bold leading-tight tracking-tight text-foreground lg:text-7xl">
                         Europa in herstel
                     </h1>
 
-                    <p className="mb-12 text-lg text-muted">
-                        10 meerkeuzevragen over de Marshall Plan en de wederopbouw van Europa na de Tweede Wereldoorlog. Test je kennis en ontdek hoe goed jij het verhaal van Europa in herstel kent!
-                        Als je in de top 10 bent dan zie je je naam terug in de Hall of Fame! Als je je naam niet ziet, dan ben je de op de tweede scherm zonder score te zien. Maar niet getreurd, je kunt het altijd opnieuw proberen!
+                    <p className="mb-12 text-sm lg:text-lg text-muted">
+                        10 meerkeuzevragen over het Marshallplan en de wederopbouw van Europa na de Tweede Wereldoorlog. Speel samen met je partner en ontdek hoe goed jullie het verhaal van Europa in herstel kennen! Na afloop zie je de resultaten van alle duo's, gerangschikt op score.
                     </p>
 
                     <div className="flex items-center gap-4 text-sm text-subtle">
@@ -66,7 +65,7 @@ export default function LandingPage() {
                         <span className="h-px w-4 bg-border" />
                         <span>Thema 4: Europa is geen spelletje. De Marshallplan</span>
                         <span className="h-px w-4 bg-border" />
-                        <span>24 maart 2026</span>
+                        <span>26 maart 2026</span>
                     </div>
                 </div>
             </div>
@@ -76,22 +75,22 @@ export default function LandingPage() {
                 <div className="space-y-8">
                     <div>
                         <h2 className="text-2xl font-semibold text-foreground">
-                            Ben je klaar om te spelen?
+                            Zijn jullie klaar om te spelen?
                         </h2>
                         <p className="mt-1 text-sm text-muted">
-                            Vul je naam in en start de quiz. Je naam zal worden weergegeven in de Hall of Fame als je in de top 10 eindigt!
+                            Vul de naam van jullie duo in en start de quiz. Na afloop zie je hoe jullie het hebben gedaan ten opzichte van alle andere duo's.
                         </p>
                     </div>
 
                     <div className="space-y-4">
                         <div className="space-y-1.5">
                             <label htmlFor="name" className="text-sm font-medium text-muted">
-                                Je naam
+                                Naam van jullie duo
                             </label>
                             <input
                                 id="name"
                                 type="text"
-                                placeholder="Vul hier je naam in"
+                                placeholder="Vul hier jullie naam in"
                                 value={name}
                                 onChange={(e) => {
                                     const val = e.target.value;

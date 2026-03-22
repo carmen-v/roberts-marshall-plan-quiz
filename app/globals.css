@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+@media (min-width: 1024px) {
+    html {
+        font-size: 20px;
+    }
+}
+
 @theme {
     --color-background:   #0c0c0c;
     --color-surface:      #171717;

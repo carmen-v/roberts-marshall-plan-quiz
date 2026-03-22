@@ -19,12 +19,22 @@ export async function POST(req: NextRequest) {
 export async function GET() {
     const redis = await getRedis();
 
-    const entries = await redis.zRangeWithScores(KEY, 0, 9, { REV: true });
+    const entries = await redis.zRangeWithScores(KEY, 0, -1, { REV: true });
 
-    const leaderboard = entries.map((entry, i) => ({
-        rank: i + 1,
-        name: String(entry.value).split("|")[0],
-        score: entry.score,
+    // Group names by score (dense ranking: all tied players share the same rank)
+    const grouped = new Map<number, string[]>();
+    for (const entry of entries) {
+        const playerName = String(entry.value).split("|")[0];
+        const names = grouped.get(entry.score) ?? [];
+        names.push(playerName);
+        grouped.set(entry.score, names);
+    }
+
+    const sortedScores = [...grouped.keys()].sort((a, b) => b - a);
+    const leaderboard = sortedScores.map((score, i) => ({
+        rank: i + 1, // based on position among present groups, skipping empty scores
+        names: grouped.get(score)!,
+        score,
     }));
 
     return NextResponse.json(leaderboard);
