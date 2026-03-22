@@ -11,6 +11,56 @@ export const questions: Question[] = [
         correct: 2,
     },
     {
+        text: "Wat deed het Marshallplan voor Europa?",
+        options: [
+            "Het stuurde soldaten om nieuwe gevechten te voeren",
+            "Het verdeelde Europa in arme en rijke gebieden",
+            "Het zorgde voor geld en materialen om verwoeste landen te herbouwen",
+            "Het verbood Europese landen om handel te drijven",
+        ],
+        correct: 2,
+    },
+    {
+        text: "Hoeveel geld stuurden de Verenigde Staten via het Marshallplan naar Europa?",
+        options: [
+            "Ongeveer 1 miljard dollar",
+            "Ongeveer 13 miljard dollar",
+            "Ongeveer 100 miljard dollar",
+            "Ongeveer 500 miljoen dollar",
+        ],
+        correct: 1,
+    },
+    {
+        text: "Welke landen kregen hulp via het Marshallplan?",
+        options: [
+            "Alle landen ter wereld",
+            "Alleen de landen die aan de kant van de Duitsers hadden gevochten",
+            "West-Europese landen zoals Nederland, Frankrijk, Engeland en West-Duitsland",
+            "Alleen Engeland en de Verenigde Staten",
+        ],
+        correct: 2,
+    },
+    {
+        text: "Waarom weigerden de Sovjet-Unie en haar bondgenoten het Marshallplan?",
+        options: [
+            "Ze hadden geen verwoeste steden na de oorlog",
+            "Ze vonden het geld te weinig om nuttig te zijn",
+            "Ze zagen het als Amerikaanse inmenging en een bedreiging voor het communisme",
+            "Ze hadden al een eigen plan dat beter werkte",
+        ],
+        correct: 2,
+    },
+    {
+        text: "Welk voordeel heeft het dat EU-landen niet met elkaar in oorlog zijn?",
+        options: [
+            "Ze hoeven nooit belasting te betalen",
+            "Mensen kunnen veilig leven, reizen en samenwerken",
+            "Ze krijgen gratis eten van andere EU-landen",
+            "Ze mogen elkaars bekende sporters overnemen",
+        ],
+        correct: 1,
+    },
+    {
         text: "Waarom werd de Europese Unie opgericht na de Tweede Wereldoorlog?",
         options: [
             "Om één grote Europese baas aan de macht te zetten",
@@ -36,46 +86,6 @@ export const questions: Question[] = [
         correct: 2,
     },
     {
-        text: "Wat betekent het vrije verkeer van personen in de EU?",
-        options: [
-            "Dat je gratis met de trein kunt reizen door heel Europa",
-            "Dat EU-burgers zonder speciale vergunning in andere EU-landen mogen wonen en werken",
-            "Dat iedereen gratis een huis in een ander land krijgt",
-            "Dat je geen paspoort meer nodig hebt in de hele wereld",
-        ],
-        correct: 1,
-    },
-    {
-        text: "Welk voordeel heeft het dat EU-landen niet met elkaar in oorlog zijn?",
-        options: [
-            "Ze hoeven nooit belasting te betalen",
-            "Mensen kunnen veilig leven, reizen en samenwerken",
-            "Ze krijgen gratis eten van andere EU-landen",
-            "Ze mogen elkaars bekende sporters overnemen",
-        ],
-        correct: 1,
-    },
-    {
-        text: "Wat deed het Marshallplan voor Europa?",
-        options: [
-            "Het stuurde soldaten om nieuwe gevechten te voeren",
-            "Het verdeelde Europa in arme en rijke gebieden",
-            "Het zorgde voor geld en materialen om verwoeste landen te herbouwen",
-            "Het verbood Europese landen om handel te drijven",
-        ],
-        correct: 2,
-    },
-    {
-        text: "Wat is het Europees Parlement?",
-        options: [
-            "Een groot hotel in Brussel waar leiders vergaderen",
-            "Een school voor toekomstige Europese leiders",
-            "Een markt waar landen producten verhandelen",
-            "De plek waar gekozen vertegenwoordigers namens EU-burgers wetten maken",
-        ],
-        correct: 3,
-    },
-    {
         text: "Welk symbool heeft de Europese Unie?",
         options: [
             "Een gouden kroon op een blauwe achtergrond",
@@ -84,15 +94,5 @@ export const questions: Question[] = [
             "Een cirkel van twaalf gouden sterren op een blauwe vlag",
         ],
         correct: 3,
-    },
-    {
-        text: "Hoe helpt de Europese Unie landen om vrede te bewaren?",
-        options: [
-            "Door een groot Europees leger dat alle landen controleert",
-            "Door samen regels te maken, handel te drijven en problemen met overleg op te lossen",
-            "Door grenzen te sluiten en niemand door te laten",
-            "Door één president te kiezen die alle beslissingen neemt",
-        ],
-        correct: 1,
     },
 ];
