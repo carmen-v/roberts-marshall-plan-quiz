@@ -25,14 +25,15 @@ export async function GET() {
     const grouped = new Map<number, string[]>();
     for (const entry of entries) {
         const playerName = String(entry.value).split("|")[0];
-        const names = grouped.get(entry.score) ?? [];
+        const s = Number(entry.score);
+        const names = grouped.get(s) ?? [];
         names.push(playerName);
-        grouped.set(entry.score, names);
+        grouped.set(s, names);
     }
 
     const sortedScores = [...grouped.keys()].sort((a, b) => b - a);
     const leaderboard = sortedScores.map((score, i) => ({
-        rank: i + 1, // based on position among present groups, skipping empty scores
+        rank: i + 1,
         names: grouped.get(score)!,
         score,
     }));
